@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Sujatha | Drug Discovery Prototype</title>
+    <!-- Use Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>🧪 PlantRx</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" data-view="dashboard">Dashboard</li>
+                    <li data-view="plants">Plants Database</li>
+                    <li data-view="proteins">Target Proteins</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Knowledge Graph Explorer</h1>
+                <p>Computational drug discovery linking anti-diabetic phytochemicals to human targets.</p>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="view-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="stat-plants">--</h3>
+                        <p>Medicinal Plants</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-chemicals">--</h3>
+                        <p>Phytochemicals</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-proteins">--</h3>
+                        <p>Target Proteins</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-interactions">--</h3>
+                        <p>Known Interactions</p>
+                    </div>
+                </div>
+                
+                <div class="hero-card glass">
+                    <h2>Welcome to the Prototype!</h2>
+                    <p>This prototype demonstrates an automated computational workflow using data from IMPPAT, UniProt, and BindingDB. Navigate the side menu to view the compiled datasets directly loaded from the project CSV files.</p>
+                </div>
+            </section>
+
+            <!-- Plants View -->
+            <section id="view-plants" class="view-section hidden">
+                <div class="glass data-container">
+                    <h2>Medicinal Plants Dictionary</h2>
+                    <p>List of South Indian anti-diabetic plants.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Common Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-plants">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Proteins View -->
+            <section id="view-proteins" class="view-section hidden">
+                <div class="glass data-container">
+                    <h2>Target Proteins (T2D)</h2>
+                    <p>Validated Human Type-2 Diabetes Targets.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>UniProt ID</th>
+                                <th>Protein Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-proteins">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Load App script -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
