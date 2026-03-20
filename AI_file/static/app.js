@@ -75,6 +75,64 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => console.error("Error fetching proteins:", err));
 
+    // --- Disease Search Logic ---
+    const searchBtn = document.getElementById('disease-search-btn');
+    const searchInput = document.getElementById('disease-input');
+    const searchTable = document.getElementById('disease-search-table');
+    const searchTbody = document.getElementById('table-disease-search');
+    const searchError = document.getElementById('disease-search-error');
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', () => {
+            const disease = searchInput.value.trim();
+            if(!disease) return;
+
+            searchBtn.textContent = "Searching...";
+            searchTable.style.display = 'none';
+            searchError.style.display = 'none';
+            
+            fetch(`/api/disease-search?disease=${encodeURIComponent(disease)}`)
+                .then(res => res.json())
+                .then(plants => {
+                    searchBtn.textContent = "Search";
+                    if(plants.length === 0) {
+                        searchError.textContent = "No recommended plants/fruits found for this disease in our database. (Try 'diabetes')";
+                        searchError.style.color = "#ffcccc";
+                        searchError.style.display = 'block';
+                    } else {
+                        searchTbody.innerHTML = '';
+                        plants.forEach(plant => {
+                            const pid = plant.Plant_ID || '-';
+                            const pNameKey = Object.keys(plant).find(k => k.toLowerCase().includes('name')) || 'Common_Name_of_Plant';
+                            const pName = plant[pNameKey] || '-';
+                            
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td><strong>${pid}</strong></td>
+                                <td>${pName}</td>
+                            `;
+                            searchTbody.appendChild(tr);
+                        });
+                        searchTable.style.display = 'table';
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching disease search:", err);
+                    searchBtn.textContent = "Search";
+                    searchError.textContent = "An error occurred while searching.";
+                    searchError.style.color = "#ffcccc";
+                    searchError.style.display = 'block';
+                });
+        });
+        
+        // Allow pressing Enter to search
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                searchBtn.click();
+            }
+        });
+    }
+
     // --- Helper for number animation ---
     function animateValue(id, start, end, duration) {
         if (start === end) return;

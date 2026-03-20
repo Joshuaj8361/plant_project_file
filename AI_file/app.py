@@ -52,6 +52,17 @@ def get_stats():
         "total_interactions": len(interactions_df)
     })
 
+@app.route('/api/disease-search', methods=['GET'])
+def search_disease():
+    from flask import request
+    disease = request.args.get('disease', '').strip().lower()
+    
+    # Since the curated dataset specifically focuses on Type-2 Diabetes targets:
+    if 'diabetes' in disease or 'diabetic' in disease:
+        return jsonify(plants_df.fillna('').to_dict(orient='records'))
+    else:
+        return jsonify([])
+
 if __name__ == '__main__':
     # Run the Flask app
     app.run(debug=True, port=5000)

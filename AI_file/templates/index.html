@@ -20,6 +20,7 @@
                     <li class="active" data-view="dashboard">Dashboard</li>
                     <li data-view="plants">Plants Database</li>
                     <li data-view="proteins">Target Proteins</li>
+                    <li data-view="disease-search">Disease Search</li>
                 </ul>
             </nav>
         </aside>
@@ -90,6 +91,30 @@
                             </tr>
                         </thead>
                         <tbody id="table-proteins">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Disease Search View -->
+            <section id="view-disease-search" class="view-section hidden">
+                <div class="glass data-container">
+                    <h2>Disease Search</h2>
+                    <p>Enter a disease name (e.g., diabetes) to find recommended plants/fruits from our database.</p>
+                    <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                        <input type="text" id="disease-input" placeholder="e.g. diabetes" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: inherit; font-family: 'Inter', sans-serif;">
+                        <button id="disease-search-btn" class="glass" style="padding: 10px 20px; cursor: pointer; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255, 255, 255, 0.2); font-weight: 600; font-family: 'Inter', sans-serif; color: inherit;">Search</button>
+                    </div>
+                    <div id="disease-search-error" style="font-weight: 600; margin-bottom: 15px; display: none;"></div>
+                    <table class="data-table" id="disease-search-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Recommended Plant / Fruit / Herb</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-disease-search">
                             <!-- Data populated by JS -->
                         </tbody>
                     </table>
