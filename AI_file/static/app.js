@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(plants => {
                     searchBtn.textContent = "Search";
                     if(plants.length === 0) {
-                        searchError.textContent = "No recommended plants/fruits found for this disease in our database. (Try 'diabetes')";
+                        searchError.textContent = "No recommended plants/fruits found for this disease in our database. (Try 'diabetes' or 'fever')";
                         searchError.style.color = "#ffcccc";
                         searchError.style.display = 'block';
                     } else {
