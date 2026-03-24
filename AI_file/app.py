@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import pandas as pd
 
 app = Flask(__name__)
@@ -59,7 +59,6 @@ def get_stats():
 
 @app.route('/api/disease-search', methods=['GET'])
 def search_disease():
-    from flask import request
     disease = request.args.get('disease', '').strip().lower()
     
     if not disease_mapping_df.empty:
@@ -88,5 +87,7 @@ def search_disease():
     
 
 if __name__ == '__main__':
-    # Run the Flask app
-    app.run(debug=True, port=5000)
+    # Support local runs and platform-provided ports such as Render's PORT env var.
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_DEBUG', '').lower() in {'1', 'true', 'yes'}
+    app.run(host='0.0.0.0', port=port, debug=debug)
