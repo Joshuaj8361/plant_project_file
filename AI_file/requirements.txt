@@ -1,4 +1,5 @@
 Flask==3.0.0
 Waitress==2.1.2
-pandas==2.1.1
+numpy==1.26.4
+pandas==2.1.4
 networkx==3.1
