@@ -11,7 +11,7 @@
 <body>
     <div class="app-container">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar" aria-hidden="true">
             <div class="logo">
                 <h2>🧪 PlantRx</h2>
             </div>
@@ -24,6 +24,23 @@
                 </ul>
             </nav>
         </aside>
+
+        <button
+            type="button"
+            class="sidebar-toggle"
+            id="sidebar-toggle"
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            aria-controls="sidebar"
+        >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 6.5H21" />
+                <path d="M3 12H21" />
+                <path d="M3 17.5H21" />
+            </svg>
+        </button>
+
+        <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
 
         <!-- Main Content -->
         <main class="main-content">

@@ -1,8 +1,41 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+    const appContainer = document.querySelector('.app-container');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const desktopMediaQuery = window.matchMedia('(min-width: 769px)');
+
     // --- View Navigation ---
     const navItems = document.querySelectorAll('.sidebar nav ul li');
     const views = document.querySelectorAll('.view-section');
+
+    function setSidebarState(isOpen) {
+        appContainer.classList.toggle('sidebar-open', isOpen);
+        sidebarToggle.setAttribute('aria-expanded', String(isOpen));
+        sidebar.setAttribute('aria-hidden', String(!isOpen));
+        sidebarOverlay.setAttribute('aria-hidden', String(!isOpen));
+    }
+
+    function applyResponsiveSidebarState() {
+        setSidebarState(desktopMediaQuery.matches);
+    }
+
+    sidebarToggle.addEventListener('click', () => {
+        const isOpen = appContainer.classList.contains('sidebar-open');
+        setSidebarState(!isOpen);
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+        setSidebarState(false);
+    });
+
+    if (typeof desktopMediaQuery.addEventListener === 'function') {
+        desktopMediaQuery.addEventListener('change', applyResponsiveSidebarState);
+    } else {
+        desktopMediaQuery.addListener(applyResponsiveSidebarState);
+    }
+
+    applyResponsiveSidebarState();
 
     navItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -18,6 +51,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     view.classList.remove('hidden');
                 }
             });
+
+            if (!desktopMediaQuery.matches) {
+                setSidebarState(false);
+            }
         });
     });
 
