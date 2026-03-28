@@ -170,6 +170,61 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // --- GNN Logic ---
+    const gnnBtn = document.getElementById('gnn-btn');
+    const gnnInput = document.getElementById('gnn-input');
+    const gnnTable = document.getElementById('gnn-table');
+    const gnnTbody = document.getElementById('table-gnn');
+    const gnnError = document.getElementById('gnn-error');
+
+    if (gnnBtn) {
+        gnnBtn.addEventListener('click', () => {
+            const disease = gnnInput.value.trim();
+            if(!disease) return;
+
+            gnnBtn.textContent = "Predicting...";
+            gnnTable.style.display = 'none';
+            gnnError.style.display = 'none';
+            
+            fetch(`/api/gnn-predict?disease=${encodeURIComponent(disease)}`)
+                .then(res => res.json())
+                .then(plants => {
+                    gnnBtn.textContent = "Predict";
+                    if(!Array.isArray(plants) || plants.length === 0) {
+                        gnnError.textContent = "Could not generate novel insights for this disease (requires valid disease map).";
+                        gnnError.style.color = "#ffcccc";
+                        gnnError.style.display = 'block';
+                    } else {
+                        gnnTbody.innerHTML = '';
+                        plants.forEach(plant => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td><strong>${plant.Plant_ID || '-'}</strong></td>
+                                <td>${plant.Common_Name_of_Plant || '-'}</td>
+                                <td style="color: var(--accent-color); font-weight: bold;">${plant.GNN_Similarity_Score}% Match</td>
+                            `;
+                            gnnTbody.appendChild(tr);
+                        });
+                        gnnTable.style.display = 'table';
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching GNN predictions:", err);
+                    gnnBtn.textContent = "Predict";
+                    gnnError.textContent = "An error occurred during network traversal.";
+                    gnnError.style.color = "#ffcccc";
+                    gnnError.style.display = 'block';
+                });
+        });
+        
+        // Allow pressing Enter to search
+        gnnInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                gnnBtn.click();
+            }
+        });
+    }
+
     // --- Helper for number animation ---
     function animateValue(id, start, end, duration) {
         if (start === end) return;

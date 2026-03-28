@@ -84,6 +84,22 @@ def search_disease():
             return jsonify(top_5_plants.fillna('').to_dict(orient='records'))
 
     return jsonify([])
+
+from gnn_pipeline.predict import predict_plants_for_disease
+
+@app.route('/api/gnn-predict', methods=['GET'])
+def gnn_predict():
+    disease = request.args.get('disease', '').strip()
+    if not disease:
+        return jsonify([])
+        
+    try:
+        results = predict_plants_for_disease(disease, top_k=5)
+        return jsonify(results)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
     
 
 if __name__ == '__main__':
