@@ -20,9 +20,10 @@ rev_plant_mapping = None
 embeddings = None
 disease_df = None
 plants_df = None
+phytochemicals_df = None
 
 def init_gnn():
-    global mappings, rev_plant_mapping, embeddings, disease_df, plants_df
+    global mappings, rev_plant_mapping, embeddings, disease_df, plants_df, phytochemicals_df
     try:
         with open(MAPPINGS_PATH, 'r') as f:
             mappings = json.load(f)
@@ -32,6 +33,7 @@ def init_gnn():
         embeddings = torch.load(EMBEDDINGS_PATH, weights_only=False)
         disease_df = pd.read_csv(DISEASE_MAPPING_PATH)
         plants_df = pd.read_csv(PLANTS_PATH)
+        phytochemicals_df = pd.read_csv(os.path.join(BASE_DIR, 'Dataset', 'phytochemicals.csv'))
         
         # Ensure we have the embeddings in memory
         if 'plant' not in embeddings:
@@ -105,10 +107,20 @@ def predict_plants_for_disease(disease_name, top_k=5):
             plant_info = plants_df[plants_df['Plant_ID'] == plant_id]
             if not plant_info.empty:
                 row = plant_info.iloc[0]
+                # Find top chemical for this plant
+                top_chemical = "Unknown"
+                if phytochemicals_df is not None and not phytochemicals_df.empty:
+                    # Filter chemicals for this plant
+                    plant_chemicals = phytochemicals_df[phytochemicals_df['Plant_Source'] == plant_id]
+                    if not plant_chemicals.empty:
+                        # Just take the first one or we could implement better logic
+                        top_chemical = plant_chemicals.iloc[0]['Chemical_Name']
+
                 results.append({
                     "Plant_ID": plant_id,
                     "Common_Name_of_Plant": row.get('Common_Name_of_Plant', 'Unknown'),
-                    "GNN_Similarity_Score": round(sim_score * 100, 2)  # as percentage
+                    "GNN_Similarity_Score": round(sim_score * 100, 2),  # as percentage
+                    "Chemical": top_chemical
                 })
                 
     return results

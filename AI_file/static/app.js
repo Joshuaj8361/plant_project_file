@@ -95,80 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => console.error("Error fetching plants:", err));
 
-    // Fetch proteins
-    fetch('/api/proteins')
-        .then(res => res.json())
-        .then(proteins => {
-            const tbody = document.getElementById('table-proteins');
-            tbody.innerHTML = '';
-            proteins.forEach(protein => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${protein.UniProt_ID || '-'}</strong></td>
-                    <td>${protein.Protein_Name || '-'}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        })
-        .catch(err => console.error("Error fetching proteins:", err));
-
-    // --- Disease Search Logic ---
-    const searchBtn = document.getElementById('disease-search-btn');
-    const searchInput = document.getElementById('disease-input');
-    const searchTable = document.getElementById('disease-search-table');
-    const searchTbody = document.getElementById('table-disease-search');
-    const searchError = document.getElementById('disease-search-error');
-
-    if (searchBtn) {
-        searchBtn.addEventListener('click', () => {
-            const disease = searchInput.value.trim();
-            if(!disease) return;
-
-            searchBtn.textContent = "Searching...";
-            searchTable.style.display = 'none';
-            searchError.style.display = 'none';
-            
-            fetch(`/api/disease-search?disease=${encodeURIComponent(disease)}`)
-                .then(res => res.json())
-                .then(plants => {
-                    searchBtn.textContent = "Search";
-                    if(plants.length === 0) {
-                        searchError.textContent = "No recommended plants/fruits found for this disease in our database. (Try 'diabetes' or 'fever')";
-                        searchError.style.color = "#ffcccc";
-                        searchError.style.display = 'block';
-                    } else {
-                        searchTbody.innerHTML = '';
-                        plants.forEach(plant => {
-                            const pid = plant.Plant_ID || '-';
-                            const pNameKey = Object.keys(plant).find(k => k.toLowerCase().includes('name')) || 'Common_Name_of_Plant';
-                            const pName = plant[pNameKey] || '-';
-                            
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td><strong>${pid}</strong></td>
-                                <td>${pName}</td>
-                            `;
-                            searchTbody.appendChild(tr);
-                        });
-                        searchTable.style.display = 'table';
-                    }
-                })
-                .catch(err => {
-                    console.error("Error fetching disease search:", err);
-                    searchBtn.textContent = "Search";
-                    searchError.textContent = "An error occurred while searching.";
-                    searchError.style.color = "#ffcccc";
-                    searchError.style.display = 'block';
-                });
-        });
-        
-        // Allow pressing Enter to search
-        searchInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                searchBtn.click();
-            }
-        });
-    }
 
     // --- GNN Logic ---
     const gnnBtn = document.getElementById('gnn-btn');
@@ -202,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <td><strong>${plant.Plant_ID || '-'}</strong></td>
                                 <td>${plant.Common_Name_of_Plant || '-'}</td>
                                 <td style="color: var(--accent-color); font-weight: bold;">${plant.GNN_Similarity_Score}% Match</td>
+                                <td><em>${plant.Chemical || 'N/A'}</em></td>
                             `;
                             gnnTbody.appendChild(tr);
                         });
